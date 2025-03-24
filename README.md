@@ -16,6 +16,11 @@ Normally, the path to the file will be something like `/home/username/UC3M-Files
 
 5. For each edition of the code, perform a git push locally and then pull the changes in the VM before execution. 
 
+### Running the initial code (start)
+The initial code provided in the repository is the code to initialize the database. This code is provided by the university and can be run using the same method described avobe. The files are located in `res/start/NEW_creation.sql` `res/start/NEW_load.sql` so just use the command `@/path/to/file.sql` to run them before anything else.
+
+
+
 ## Structure of the repository:
 The repository is structured in the following way:
 - `src/` contains all the code for the project.
