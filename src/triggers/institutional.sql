@@ -3,7 +3,6 @@
 CREATE OR REPLACE TRIGGER trg_prevent_institutional_posts
 -- Before the insert
 BEFORE INSERT ON posts
-FOR EACH ROW
 DECLARE
     v_user_type users.type%TYPE;
 BEGIN
