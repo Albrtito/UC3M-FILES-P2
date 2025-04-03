@@ -11,7 +11,7 @@
 -- - Percentage of unreturned loans
 -- -----------------------------------------------------------------------
 
-CREATE OR REPLACE VIEW REPORTS_ON_EMPLOYEES AS
+
 WITH 
 -- Calculate driver base information and their service details
 driver_base AS (
@@ -64,7 +64,7 @@ driver_loans AS (
         d.passport
 )
 
--- Final query combining all the calculations
+-- Query using all subqueries defined above
 SELECT 
     db.fullname AS "Driver Name",
     db.age AS "Age",
@@ -91,8 +91,8 @@ LEFT JOIN
     driver_stops ds ON db.passport = ds.passport
 LEFT JOIN 
     driver_loans dl ON db.passport = dl.passport
+
+-- Order the results by the driver's full name attribute
 ORDER BY 
     db.fullname;
 
--- Test query to validate the view
-SELECT * FROM REPORTS_ON_EMPLOYEES;
