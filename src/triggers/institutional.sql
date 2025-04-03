@@ -5,7 +5,6 @@ CREATE OR REPLACE TRIGGER trg_prevent_institutional_posts
 -- Before the insert
 BEFORE INSERT ON posts
 FOR EACH ROW
-
 DECLARE
 user_type users.type%TYPE;
 BEGIN
@@ -20,3 +19,4 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20001, 'Institutional users cannot create posts.');
     END IF;
 END;
+/
