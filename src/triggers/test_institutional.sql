@@ -1,4 +1,11 @@
 -- Tests para el trigger trg_prevent_institutional_posts
+-- Creación de los municipios necesarios para los usuarios
+INSERT INTO municipalities(TOWN, PROVINCE, POPULATION)
+VALUES ('TOWN1', 'PROVINCE1', 15000);
+
+INSERT INTO municipalities(TOWN, PROVINCE, POPULATION)
+VALUES ('TOWN2', 'PROVINCE2', 28500);
+
 
 -- insert into users a normal user (P) (user_ID, name, type) values (1, 'John Doe', 'P');
 INSERT INTO USERS(USER_ID, ID_CARD, NAME, SURNAME1, SURNAME2, BIRTHDATE, TOWN, PROVINCE, ADDRESS, EMAIL, PHONE, TYPE) 
