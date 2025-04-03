@@ -5,16 +5,16 @@ CREATE OR REPLACE TRIGGER trg_prevent_institutional_posts
 BEFORE INSERT ON posts
 FOR EACH ROW
 DECLARE
-    user_type users.type%TYPE;
+    v_user_type users.type%TYPE;
 BEGIN
 
 -- Get the user type
-    select type into user_type 
+    select type into v_user_type 
         from users 
-        WHERE userID = :NEW.userID;
+        WHERE user_ID = :NEW.user_ID;
 
     -- Check if the user type is 'L' (library)
-    IF user_type = 'L' THEN
+    IF v_user_type = 'L' THEN
         -- Raise an error if the user is a library
         RAISE_APPLICATION_ERROR(-20001, 'Institutional users cannot create posts.');
     END IF;
