@@ -1,0 +1,98 @@
+-- -----------------------------------------------------------------------
+-- QUERY: Reports on Employees
+-- -----------------------------------------------------------------------
+-- For each driver, provide:
+-- - Full name
+-- - Age
+-- - Seniority contracted (whole years)
+-- - Active years (years on road)
+-- - Number of stops per active year
+-- - Number of loans per active year
+-- - Percentage of unreturned loans
+-- -----------------------------------------------------------------------
+
+CREATE OR REPLACE VIEW REPORTS_ON_EMPLOYEES AS
+WITH 
+-- Calculate driver base information and their service details
+driver_base AS (
+    SELECT 
+        d.passport,
+        d.fullname,
+        d.birthdate,
+        d.cont_start,
+        d.cont_end,
+        -- Calculate age in years
+        TRUNC(MONTHS_BETWEEN(SYSDATE, d.birthdate) / 12) AS age,
+        -- Calculate seniority (contract length) in years
+        TRUNC(MONTHS_BETWEEN(NVL(d.cont_end, SYSDATE), d.cont_start) / 12) AS seniority_years,
+        -- Calculate active years (same as seniority but with different name for clarity)
+        TRUNC(MONTHS_BETWEEN(NVL(d.cont_end, SYSDATE), d.cont_start) / 12) AS active_years
+    FROM 
+        drivers d
+),
+
+-- Count the number of stops each driver has visited
+driver_stops AS (
+    SELECT 
+        d.passport,
+        COUNT(DISTINCT s.town || s.province) AS total_stops
+    FROM 
+        drivers d
+    LEFT JOIN 
+        assign_drv ad ON d.passport = ad.passport
+    LEFT JOIN 
+        services s ON ad.passport = s.passport AND ad.taskdate = s.taskdate
+    GROUP BY 
+        d.passport
+),
+
+-- Count loans and unreturned loans for each driver
+driver_loans AS (
+    SELECT 
+        d.passport,
+        COUNT(l.signature) AS total_loans,
+        COUNT(CASE WHEN l.return IS NULL THEN 1 END) AS unreturned_loans
+    FROM 
+        drivers d
+    LEFT JOIN 
+        assign_drv ad ON d.passport = ad.passport
+    LEFT JOIN 
+        services s ON ad.passport = s.passport AND ad.taskdate = s.taskdate
+    LEFT JOIN 
+        loans l ON s.town = l.town AND s.province = l.province AND s.taskdate = l.stopdate
+    GROUP BY 
+        d.passport
+)
+
+-- Final query combining all the calculations
+SELECT 
+    db.fullname AS "Driver Name",
+    db.age AS "Age",
+    db.seniority_years AS "Seniority (Years)",
+    db.active_years AS "Active Years",
+    -- Calculate stops per active year, handling division by zero
+    CASE 
+        WHEN db.active_years = 0 THEN ds.total_stops
+        ELSE ROUND(ds.total_stops / db.active_years, 2)
+    END AS "Stops per Active Year",
+    -- Calculate loans per active year, handling division by zero
+    CASE 
+        WHEN db.active_years = 0 THEN dl.total_loans
+        ELSE ROUND(dl.total_loans / db.active_years, 2)
+    END AS "Loans per Active Year",
+    -- Calculate percentage of unreturned loans, handling division by zero
+    CASE 
+        WHEN NVL(dl.total_loans, 0) = 0 THEN 0
+        ELSE ROUND(dl.unreturned_loans * 100 / dl.total_loans, 2)
+    END AS "Unreturned Loans (%)"
+FROM 
+    driver_base db
+LEFT JOIN 
+    driver_stops ds ON db.passport = ds.passport
+LEFT JOIN 
+    driver_loans dl ON db.passport = dl.passport
+ORDER BY 
+    db.fullname;
+
+-- Test query to validate the view
+SELECT * FROM REPORTS_ON_EMPLOYEES;

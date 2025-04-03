@@ -25,5 +25,5 @@ The initial code provided in the repository is the code to initialize the databa
 The repository is structured in the following way:
 - `src/` contains all the code for the project.
 - `src/moduleName/` Each part of the proyect has its own folder with its code.
-- 'res/' contains the resources used in the project. Mainly the assignment with the problem description and **the provided code to initialize the database in order to perform all operations required**. 
+- `res/` contains the resources used in the project. Mainly the assignment with the problem description and **the provided code to initialize the database in order to perform all operations required**. 
 - `100495811_100495711_100495775.docx` is the report of the project. This report can be eddited (and should be) directly on google drive. The final report must be a PDF file generated from this docx file. 
