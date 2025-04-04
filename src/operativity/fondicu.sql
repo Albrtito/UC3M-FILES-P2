@@ -33,9 +33,10 @@ CREATE OR REPLACE PACKAGE BODY foundicu AS
     v_exists     INTEGER;
     v_ban_date   DATE;
     v_loans      INTEGER;
-    v_exists    INTEGER;
     v_signature_reservation  VARCHAR2(5);
     v_conflicting_loans INTEGER;
+    v_town       users.town%TYPE;
+    v_province   users.province%TYPE;
     
     BEGIN
     -- We first do all the checks to ensure that the user can turn the reservation into a loan or just 
@@ -48,7 +49,8 @@ CREATE OR REPLACE PACKAGE BODY foundicu AS
     END IF;
     -- Check if the user is banned
     SELECT BAN_UP2 INTO v_ban_date FROM USERS WHERE USER_ID = current_user_id;
-    IF v_ban_date IS NOT NULL AND v_ban_date > SYSDATE THEN
+    -- Use trunc to compare dates
+    IF v_ban_date IS NOT NULL AND v_ban_date > TRUNC(SYSDATE) THEN
     -- If the user is banned, raise an error
       RAISE_APPLICATION_ERROR(-20102, 'User is banned');
     END IF;
@@ -82,7 +84,8 @@ CREATE OR REPLACE PACKAGE BODY foundicu AS
       AND USER_ID = current_user_id
       AND TYPE = 'R'
       AND RETURN IS NULL
-      AND STOPDATE >= SYSDATE;
+        -- Use TRUNC to compare dates 
+      AND STOPDATE >= TRUNC(SYSDATE);
     
     IF v_signature_reservation = 0 THEN
     -- IF the user has not reserved the copy, check if it is available for two weeks
@@ -92,7 +95,7 @@ CREATE OR REPLACE PACKAGE BODY foundicu AS
       WHERE SIGNATURE = p_signature
         AND TYPE = 'L'
     -- Add 14 days to the current date to check for availability
-        AND STOPDATE BETWEEN SYSDATE AND SYSDATE + 14;
+        AND STOPDATE BETWEEN TRUNC(SYSDATE) AND TRUNC(SYSDATE + 14);
     
       IF v_conflicting_loans > 0 THEN
         -- If the copy is reserved for another user, raise an error
@@ -107,8 +110,10 @@ CREATE OR REPLACE PACKAGE BODY foundicu AS
     WHERE USER_ID = current_user_id;
 
     -- Finally, insert the loan
-    INSERT INTO LOANS(SIGNATURE, USER_ID, STOPDATE, TOWN, PROVINCE, TYPE, TIME,REURN)
-    VALUES (p_signature, current_user_id, NULL, v_town, v_province, 'L', SYSDATE, SYSDATE + 14);
+    -- The minutes are calculated as the current hour in 24h format multiplied by 60 plus the current minutes to obtain
+    -- the minutes that passed on that day since midnight
+    INSERT INTO LOANS(SIGNATURE, USER_ID, STOPDATE, TOWN, PROVINCE, TYPE, TIME,RETURN)
+    VALUES (p_signature, current_user_id, NULL, v_town, v_province, 'L',  (TO_NUMBER(TO_CHAR(SYSDATE, 'HH24')) * 60) + TO_NUMBER(TO_CHAR(SYSDATE, 'MI')), TRUNC(SYSDATE + 14));
     END insert_loan;
 
     -- INSERT RESERVATION
