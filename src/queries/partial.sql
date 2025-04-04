@@ -42,7 +42,6 @@ driver_stops AS (
     GROUP BY 
         d.passport
 ),
-
 -- Get the stops per active year for each driver
 driver_stops_average AS(
 SELECT
