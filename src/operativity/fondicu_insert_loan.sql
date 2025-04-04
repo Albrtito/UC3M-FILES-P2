@@ -93,7 +93,7 @@ CREATE OR REPLACE PACKAGE BODY foundicu AS
       WHERE SIGNATURE = p_signature
         AND TYPE = 'L'
     -- Add 14 days to the current date to check for availability
-        AND STOPDATE BETWEEN SYSDATE AND SYSDATE + 14;
+        AND STOPDATE BETWEEN TRUNC(SYSDATE) AND TRUNC(SYSDATE + 14);
     
       IF v_conflicting_loans > 0 THEN
         -- If the copy is reserved for another user, raise an error
