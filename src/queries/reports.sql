@@ -29,6 +29,7 @@ driver_base AS (
         drivers d
 ),
 
+
 -- Count the number of stops each driver has visited
 driver_stops AS (
     SELECT 
