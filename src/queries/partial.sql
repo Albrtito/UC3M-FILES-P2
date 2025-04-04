@@ -1,4 +1,3 @@
-
     SELECT 
         d.passport,
         d.fullname,
@@ -14,4 +13,4 @@
         TRUNC(MONTHS_BETWEEN(NVL(d.cont_end, SYSDATE), d.cont_start) / 12) AS active_years
     FROM 
         drivers d
-);
+;
