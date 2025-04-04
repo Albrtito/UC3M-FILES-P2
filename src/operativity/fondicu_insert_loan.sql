@@ -34,6 +34,8 @@ CREATE OR REPLACE PACKAGE BODY foundicu AS
     v_exists    INTEGER;
     v_signature_reservation  VARCHAR2(5);
     v_conflicting_loans INTEGER;
+    v_town       users.town%TYPE;
+    v_province   users.province%TYPE;
     
     BEGIN
     -- We first do all the checks to ensure that the user can turn the reservation into a loan or just 
