@@ -19,7 +19,6 @@ driver_base AS (
     FROM 
         drivers d
 ),
-
 driver_stops AS (
   SELECT 
         d.passport,
@@ -33,13 +32,13 @@ driver_stops AS (
     GROUP BY 
         d.passport
 )
-    SELECT
-        ds.passport,
-        db.fullname,
-        db.active_years,
-        ds.total_stops / db.active_years AS stops_per_active_year
-    FROM 
-        driver_stops ds
-    LEFT JOIN
-        driver_base db ON ds.passport = db.passport
+SELECT
+    ds.passport,
+    db.fullname,
+    db.active_years,
+    ds.total_stops / db.active_years AS stops_per_active_year
+FROM 
+    driver_stops ds
+LEFT JOIN
+    driver_base db ON ds.passport = db.passport
 ;
