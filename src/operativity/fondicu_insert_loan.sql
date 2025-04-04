@@ -47,7 +47,8 @@ CREATE OR REPLACE PACKAGE BODY foundicu AS
     END IF;
     -- Check if the user is banned
     SELECT BAN_UP2 INTO v_ban_date FROM USERS WHERE USER_ID = current_user_id;
-    IF v_ban_date IS NOT NULL AND v_ban_date > SYSDATE THEN
+    -- Use trunc to compare dates
+    IF v_ban_date IS NOT NULL AND v_ban_date > TRUNC(SYSDATE) THEN
     -- If the user is banned, raise an error
       RAISE_APPLICATION_ERROR(-20102, 'User is banned');
     END IF;
@@ -81,7 +82,8 @@ CREATE OR REPLACE PACKAGE BODY foundicu AS
       AND USER_ID = current_user_id
       AND TYPE = 'R'
       AND RETURN IS NULL
-      AND STOPDATE >= SYSDATE;
+        -- Use TRUNC to compare dates 
+      AND STOPDATE >= TRUNC(SYSDATE);
     
     IF v_signature_reservation = 0 THEN
     -- IF the user has not reserved the copy, check if it is available for two weeks
