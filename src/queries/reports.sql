@@ -1,19 +1,16 @@
--- -----------------------------------------------------------------------
--- QUERY: Reports on Employees
--- -----------------------------------------------------------------------
 -- For each driver, provide:
--- - Full name
--- - Age
--- - Seniority contracted (whole years)
--- - Active years (years on road)
--- - Number of stops per active year
--- - Number of loans per active year
--- - Percentage of unreturned loans
--- -----------------------------------------------------------------------
+--  Full name
+--  Age
+--  Seniority contracted (whole years)
+--  Active years (years on road)
+--  Number of stops per active year
+--  Number of loans per active year
+--  Percentage of unreturned loans
 
 
 WITH 
--- Calculate driver base information and their service details
+-- Get the info that we need from the drivers table into an smaller table 
+-- passport (so that we can still identify), Full name, birthdate age(needs to be computed), seniority(needs to be computed), active years(needs to be computed), we also maintain the contract start and end dates
 driver_base AS (
     SELECT 
         d.passport,
@@ -23,9 +20,10 @@ driver_base AS (
         d.cont_end,
         -- Calculate age in years
         TRUNC(MONTHS_BETWEEN(SYSDATE, d.birthdate) / 12) AS age,
-        -- Calculate seniority (contract length) in years
+        -- Calculate seniority (contract length) in years. 
+        -- Use NVL to handle NULL end dates, if no end date, then use SYSDATE
         TRUNC(MONTHS_BETWEEN(NVL(d.cont_end, SYSDATE), d.cont_start) / 12) AS seniority_years,
-        -- Calculate active years (same as seniority but with different name for clarity)
+        -- Dont get what's the difference between this and the one above, so add it here as the same thing
         TRUNC(MONTHS_BETWEEN(NVL(d.cont_end, SYSDATE), d.cont_start) / 12) AS active_years
     FROM 
         drivers d
@@ -35,7 +33,7 @@ driver_base AS (
 driver_stops AS (
     SELECT 
         d.passport,
-        COUNT(DISTINCT s.town || s.province) AS total_stops
+        COUNT(DISTINCT s.town, s.province) AS total_stops
     FROM 
         drivers d
     LEFT JOIN 
