@@ -98,7 +98,6 @@ LEFT JOIN
     driver_stops ds ON db.passport = ds.passport
 LEFT JOIN 
     driver_loans dl ON db.passport = dl.passport
-
 -- Order the results by the driver's full name attribute
 ORDER BY 
     db.fullname
