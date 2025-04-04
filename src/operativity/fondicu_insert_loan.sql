@@ -31,7 +31,6 @@ CREATE OR REPLACE PACKAGE BODY foundicu AS
     v_exists     INTEGER;
     v_ban_date   DATE;
     v_loans      INTEGER;
-    v_exists    INTEGER;
     v_signature_reservation  VARCHAR2(5);
     v_conflicting_loans INTEGER;
     v_town       users.town%TYPE;
@@ -107,7 +106,7 @@ CREATE OR REPLACE PACKAGE BODY foundicu AS
     WHERE USER_ID = current_user_id;
 
     -- Finally, insert the loan
-    INSERT INTO LOANS(SIGNATURE, USER_ID, STOPDATE, TOWN, PROVINCE, TYPE, TIME,REURN)
+    INSERT INTO LOANS(SIGNATURE, USER_ID, STOPDATE, TOWN, PROVINCE, TYPE, TIME,RETURN)
     VALUES (p_signature, current_user_id, NULL, v_town, v_province, 'L', SYSDATE, SYSDATE + 14);
     END insert_loan;
 
