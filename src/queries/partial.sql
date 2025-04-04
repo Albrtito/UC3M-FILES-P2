@@ -53,8 +53,9 @@ FROM
     driver_stops ds
 LEFT JOIN
     driver_base db ON ds.passport = db.passport
-)
+),
 -- Count loans and unreturned loans for each driver
+driver_loans AS (
 SELECT
     d.passport,
     COUNT(l.signature) AS total_loans,
@@ -69,4 +70,36 @@ LEFT JOIN
     loans l ON s.town = l.town AND s.province = l.province AND s.taskdate = l.stopdate
 GROUP BY 
     d.passport
+)
+-- Query using all subqueries defined above
+SELECT 
+    db.fullname AS "Driver Name",
+    db.age AS "Age",
+    db.seniority_years AS "Seniority (Years)",
+    db.active_years AS "Active Years",
+    -- Calculate stops per active year, handling division by zero
+    CASE 
+        WHEN db.active_years = 0 THEN ds.total_stops
+        ELSE ROUND(ds.total_stops / db.active_years, 2)
+    END AS "Stops per Active Year",
+    -- Calculate loans per active year, handling division by zero
+    CASE 
+        WHEN db.active_years = 0 THEN dl.total_loans
+        ELSE ROUND(dl.total_loans / db.active_years, 2)
+    END AS "Loans per Active Year",
+    -- Calculate percentage of unreturned loans, handling division by zero
+    CASE 
+        WHEN NVL(dl.total_loans, 0) = 0 THEN 0
+        ELSE ROUND(dl.unreturned_loans * 100 / dl.total_loans, 2)
+    END AS "Unreturned Loans (%)"
+FROM 
+    driver_base db
+LEFT JOIN 
+    driver_stops ds ON db.passport = ds.passport
+LEFT JOIN 
+    driver_loans dl ON db.passport = dl.passport
+
+-- Order the results by the driver's full name attribute
+ORDER BY 
+    db.fullname;
 ;

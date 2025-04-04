@@ -1,13 +1,3 @@
--- For each driver, provide:
---  Full name
---  Age
---  Seniority contracted (whole years)
---  Active years (years on road)
---  Number of stops per active year
---  Number of loans per active year
---  Percentage of unreturned loans
-
-
 WITH 
 -- Get the info that we need from the drivers table into an smaller table 
 -- passport (so that we can still identify), Full name, birthdate age(needs to be computed), seniority(needs to be computed), active years(needs to be computed), we also maintain the contract start and end dates
@@ -45,6 +35,7 @@ driver_stops AS (
         d.passport
 ),
 
+-- Get the stops per active year for each driver
 driver_stops_average AS (
     SELECT
         ds.passport,
