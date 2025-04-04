@@ -18,8 +18,6 @@ driver_base AS (
     FROM 
         drivers d
 ),
-
-
 -- Count the number of stops each driver has visited
 driver_stops AS (
   SELECT 
@@ -34,7 +32,6 @@ driver_stops AS (
     GROUP BY 
         d.passport
 ),
-
 -- Get the stops per active year for each driver
 driver_stops_average AS (
     SELECT
@@ -64,7 +61,6 @@ driver_loans AS (
     GROUP BY 
         d.passport
 )
-
 -- Query using all subqueries defined above
 SELECT 
     db.fullname AS "Driver Name",
@@ -92,7 +88,6 @@ LEFT JOIN
     driver_stops ds ON db.passport = ds.passport
 LEFT JOIN 
     driver_loans dl ON db.passport = dl.passport
-
 -- Order the results by the driver's full name attribute
 ORDER BY 
     db.fullname;
