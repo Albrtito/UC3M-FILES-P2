@@ -20,8 +20,6 @@ driver_base AS (
         drivers d
 )
     SELECT
-    WITH driver_stops AS (
-
         ds.passport,
         db.fullname,
         db.active_years,
