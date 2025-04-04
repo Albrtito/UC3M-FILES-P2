@@ -109,7 +109,6 @@ CREATE OR REPLACE PACKAGE BODY foundicu AS
     -- Finally, insert the loan
     INSERT INTO LOANS(SIGNATURE, USER_ID, STOPDATE, TOWN, PROVINCE, TYPE, TIME,REURN)
     VALUES (p_signature, current_user_id, NULL, v_town, v_province, 'L', SYSDATE, SYSDATE + 14);
-
     END insert_loan;
 
     -- INSERT RESERVATION
