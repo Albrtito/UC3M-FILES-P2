@@ -1,7 +1,6 @@
-
-    SELECT 
+  SELECT 
         d.passport,
-        COUNT(DISTINCT s.town, s.province) AS total_stops
+        COUNT(DISTINCT s.town || s.province) AS total_stops
     FROM 
         drivers d
     LEFT JOIN 
@@ -11,4 +10,3 @@
     GROUP BY 
         d.passport
 ;
-
