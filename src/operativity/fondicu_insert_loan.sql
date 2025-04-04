@@ -109,7 +109,7 @@ CREATE OR REPLACE PACKAGE BODY foundicu AS
 
     -- Finally, insert the loan
     INSERT INTO LOANS(SIGNATURE, USER_ID, STOPDATE, TOWN, PROVINCE, TYPE, TIME,RETURN)
-    VALUES (p_signature, current_user_id, NULL, v_town, v_province, 'L', SYSDATE, SYSDATE + 14);
+    VALUES (p_signature, current_user_id, NULL, v_town, v_province, 'L', TRUNC(SYSDATE), TRUNC(SYSDATE + 14));
     END insert_loan;
 
 END foundicu;
