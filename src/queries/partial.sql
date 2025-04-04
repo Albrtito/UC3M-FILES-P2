@@ -1,5 +1,4 @@
 -- Get the stops per active year for each driver
-driver_stops_average AS (
     SELECT
         ds.passport,
         db.fullname,
@@ -9,3 +8,4 @@ driver_stops_average AS (
         driver_stops ds
     LEFT JOIN
         driver_base db ON ds.passport = db.passport
+;
