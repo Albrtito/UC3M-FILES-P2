@@ -43,7 +43,6 @@ driver_stops_average AS (
         driver_stops ds
     LEFT JOIN
         driver_base db ON ds.passport = db.passport
-
 -- Count loans and unreturned loans for each driver
 driver_loans AS (
     SELECT 
