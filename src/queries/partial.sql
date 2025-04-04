@@ -101,5 +101,5 @@ LEFT JOIN
 
 -- Order the results by the driver's full name attribute
 ORDER BY 
-    db.fullname;
+    db.fullname
 ;
