@@ -1,3 +1,13 @@
+-- For each driver, provide:
+--  Full name
+--  Age
+--  Seniority contracted (whole years)
+--  Active years (years on road)
+--  Number of stops per active year
+--  Number of loans per active year
+--  Percentage of unreturned loans
+
+
 -- Get the stops per active year for each driver
 WITH 
 -- Get the info that we need from the drivers table into an smaller table 
@@ -31,7 +41,10 @@ driver_stops AS (
         services s ON ad.passport = s.passport AND ad.taskdate = s.taskdate
     GROUP BY 
         d.passport
-)
+),
+
+-- Get the stops per active year for each driver
+driver_stops_average AS(
 SELECT
     ds.passport,
     db.fullname,
@@ -41,4 +54,20 @@ FROM
     driver_stops ds
 LEFT JOIN
     driver_base db ON ds.passport = db.passport
+)
+-- Count loans and unreturned loans for each driver
+SELECT
+    d.passport,
+    COUNT(l.signature) AS total_loans,
+    COUNT(CASE WHEN l.return IS NULL THEN 1 END) AS unreturned_loans
+FROM 
+    drivers d
+LEFT JOIN 
+    assign_drv ad ON d.passport = ad.passport
+LEFT JOIN 
+    services s ON ad.passport = s.passport AND ad.taskdate = s.taskdate
+LEFT JOIN 
+    loans l ON s.town = l.town AND s.province = l.province AND s.taskdate = l.stopdate
+GROUP BY 
+    d.passport
 ;
