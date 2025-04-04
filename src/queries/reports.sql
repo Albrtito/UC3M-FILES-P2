@@ -32,9 +32,9 @@ driver_base AS (
 
 -- Count the number of stops each driver has visited
 driver_stops AS (
-    SELECT 
+  SELECT 
         d.passport,
-        COUNT(DISTINCT s.town, s.province) AS total_stops
+        COUNT(DISTINCT s.town || s.province) AS total_stops
     FROM 
         drivers d
     LEFT JOIN 
@@ -44,6 +44,17 @@ driver_stops AS (
     GROUP BY 
         d.passport
 ),
+
+driver_stops_average AS (
+    SELECT
+        ds.passport,
+        db.fullname,
+        db.active_years,
+        ds.total_stops / db.active_years AS stops_per_active_year
+    FROM 
+        driver_stops ds
+    LEFT JOIN
+        driver_base db ON ds.passport = db.passport
 
 -- Count loans and unreturned loans for each driver
 driver_loans AS (

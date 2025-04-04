@@ -1,12 +1,11 @@
-  SELECT 
-        d.passport,
-        COUNT(DISTINCT s.town || s.province) AS total_stops
+-- Get the stops per active year for each driver
+driver_stops_average AS (
+    SELECT
+        ds.passport,
+        db.fullname,
+        db.active_years,
+        ds.total_stops / db.active_years AS stops_per_active_year
     FROM 
-        drivers d
-    LEFT JOIN 
-        assign_drv ad ON d.passport = ad.passport
-    LEFT JOIN 
-        services s ON ad.passport = s.passport AND ad.taskdate = s.taskdate
-    GROUP BY 
-        d.passport
-;
+        driver_stops ds
+    LEFT JOIN
+        driver_base db ON ds.passport = db.passport
