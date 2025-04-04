@@ -2,7 +2,6 @@ CREATE OR REPLACE PACKAGE foundicu AS
   current_user_id VARCHAR2(20);
   PROCEDURE set_current_user(p_userid VARCHAR2);
   FUNCTION get_current_user RETURN VARCHAR2;
-  PROCEDURE insert_loan(p_signature VARCHAR2);
   PROCEDURE insert_reservation(p_isbn VARCHAR2, p_date DATE);
   PROCEDURE record_return(p_signature VARCHAR2);
 END foundicu;
